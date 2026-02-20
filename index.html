@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Interactivo JS</title>
+    <style>
+        /* Variables de color para fácil personalización */
+        :root {
+            --primary: #4f46e5;
+            --secondary: #10b981;
+            --bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        h1 { color: var(--primary); margin-bottom: 30px; }
+
+        /* Contenedor Grid para las tarjetas */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        /* Estilo de las Tarjetas */
+        .card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-top: 4px solid var(--primary);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h3 { margin-top: 0; font-size: 1.1rem; color: #4b5563; }
+
+        /* Estilos de elementos interactivos */
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .resaltado {
+            background-color: #fef3c7;
+            border: 2px dashed #f59e0b;
+            padding: 5px;
+            display: inline-block;
+        }
+
+        .tachado { text-decoration: line-through; color: #9ca3af; }
+
+        ul { padding-left: 20px; cursor: pointer; }
+        
+        #mi-imagen {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: filter 0.3s;
+        }
+
+        #mi-imagen:hover { filter: sepia(100%); }
+
+    </style>
+</head>
+<body>
+
+    <h1>Laboratorio de Manipulación DOM</h1>
+
+    <div class="grid-container">
+        
+        <div class="card">
+            <h3>1. Evento de Botón</h3>
+            <button id="btn-magico">¡Lanzar Alerta!</button>
+        </div>
+
+        <div class="card">
+            <h3>2. Cambio de Color</h3>
+            <p class="zona-hover">Pasa el mouse aquí para cambiar el fondo de esta tarjeta.</p>
+        </div>
+
+        <div class="card">
+            <h3>3. Input en Vivo</h3>
+            <input type="text" placeholder="Escribe algo...">
+            <p id="espejo" style="font-size: 0.8rem; color: gray;"></p>
+        </div>
+
+        <div class="card" id="padre">
+            <h3>4. Selector CSS Complejo</h3>
+            <span class="hijo-especial">Haz clic para resaltarme.</span>
+        </div>
+
+        <div class="card">
+            <h3>5. Link Seguro</h3>
+            <a href="https://example.com" data-tipo="seguro">Enlace con atributo data</a>
+        </div>
+
+        <div class="card">
+            <h3>6. Lista de Tareas</h3>
+            <ul class="lista-interactiva">
+                <li>Comprar café ☕</li>
+                <li>Aprender JS 🚀</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h3>7. Selector por Nombre</h3>
+            <label><input type="radio" name="tema" value="Claro"> ☀️</label>
+            <label><input type="radio" name="tema" value="Oscuro"> 🌙</label>
+        </div>
+
+        <div class="card">
+            <h3>8. Manipulación de Imagen</h3>
+            <img id="mi-imagen" src="https://picsum.photos/200/120" alt="Imagen aleatoria">
+        </div>
+
+    </div>
+
+    <script>
+        // 1. ID
+        document.getElementById('btn-magico').onclick = () => alert("¡Acción ejecutada!");
+
+        // 2. QuerySelector Clase
+        const zona = document.querySelector('.zona-hover');
+        zona.onmouseenter = () => zona.parentElement.style.backgroundColor = '#d1fae5';
+        zona.onmouseleave = () => zona.parentElement.style.backgroundColor = 'white';
+
+        // 3. TagName
+        const input = document.getElementsByTagName('input')[0];
+        input.onkeyup = () => document.getElementById('espejo').innerText = "Escribiendo: " + input.value;
+
+        // 4. CSS Descendente
+        const span = document.querySelector('#padre .hijo-especial');
+        span.onclick = () => span.classList.toggle('resaltado');
+
+        // 5. Atributo
+        const link = document.querySelector('a[data-tipo="seguro"]');
+        link.onclick = (e) => {
+            e.preventDefault();
+            link.innerText = "¡Enlace verificado!";
+            link.style.color = "green";
+        };
+
+        // 6. QuerySelectorAll
+        const items = document.querySelectorAll('.lista-interactiva li');
+        items.forEach(item => {
+            item.onclick = () => item.classList.toggle('tachado');
+        });
+
+        // 7. Name
+        const radios = document.getElementsByName('tema');
+        radios.forEach(r => {
+            r.onchange = () => alert("Cambiando a modo: " + r.value);
+        });
+
+        // 8. ID + Estilo Directo
+        const img = document.getElementById('mi-imagen');
+        img.onclick = () => {
+            img.style.borderRadius = img.style.borderRadius === '50%' ? '8px' : '50%';
+        };
+    </script>
+</body>
+</html>
